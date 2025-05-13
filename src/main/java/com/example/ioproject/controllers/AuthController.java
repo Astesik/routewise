@@ -70,7 +70,7 @@ public class AuthController {
     Cookie cookie = new Cookie("accessToken", jwt);
     cookie.setHttpOnly(true);
     cookie.setPath("/");
-    cookie.setMaxAge(60*15); // 15 minut
+    cookie.setMaxAge(60*60); // 60 minut
     cookie.setSecure(false); // zmień na true jeśli używasz HTTPS
     cookie.setDomain("localhost"); // lub domena frontendowa
     response.addCookie(cookie);
