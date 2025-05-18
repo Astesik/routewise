@@ -27,9 +27,27 @@ public class PositionService {
             Map<String, Object> country = (Map<String, Object>) pos.get("country");
             String countryCode = country != null ? (String) country.get("code") : null;
             Double fuelLevel = pos.get("fuellevelperc") != null ? Double.valueOf(pos.get("fuellevelperc").toString()) : null;
+
             Map<String, Object> coordinate = (Map<String, Object>) pos.get("coordinate");
             Double latitude = coordinate != null ? (Double) coordinate.get("latitude") : null;
             Double longitude = coordinate != null ? (Double) coordinate.get("longitude") : null;
+
+            // Nowe pola:
+            String ignitionState = pos.get("ignitionState") != null ? pos.get("ignitionState").toString() : null;
+            Double speed = pos.get("speed") != null ? Double.valueOf(pos.get("speed").toString()) : null;
+            Integer heading = pos.get("heading") != null ? Integer.valueOf(pos.get("heading").toString()) : null;
+
+            List<Map<String, Object>> drivers = (List<Map<String, Object>>) pos.get("drivers");
+            String driverSlot0 = null;
+            String driverSlot1 = null;
+            if (drivers != null) {
+                if (drivers.size() > 0 && drivers.get(0).get("id") != null) {
+                    driverSlot0 = drivers.get(0).get("id").toString();
+                }
+                if (drivers.size() > 1 && drivers.get(1).get("id") != null) {
+                    driverSlot1 = drivers.get(1).get("id").toString();
+                }
+            }
 
             Optional<Position> existingPositionOpt = positionRepository.findByDeviceId(deviceId);
 
@@ -40,6 +58,14 @@ public class PositionService {
                 existingPosition.setLatitude(latitude);
                 existingPosition.setLongitude(longitude);
                 existingPosition.setUpdatedAt(LocalDateTime.now());
+
+                // Nowe pola:
+                existingPosition.setIgnitionState(ignitionState);
+                existingPosition.setSpeed(speed);
+                existingPosition.setHeading(heading);
+                existingPosition.setDriverSlot0(driverSlot0);
+                existingPosition.setDriverSlot1(driverSlot1);
+
                 positionRepository.save(existingPosition);
             } else {
                 Position newPosition = new Position(
@@ -48,7 +74,12 @@ public class PositionService {
                         fuelLevel,
                         latitude,
                         longitude,
-                        LocalDateTime.now()
+                        LocalDateTime.now(),
+                        ignitionState,
+                        speed,
+                        heading,
+                        driverSlot0,
+                        driverSlot1
                 );
                 positionRepository.save(newPosition);
             }
