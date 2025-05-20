@@ -1,6 +1,7 @@
 package com.example.ioproject.controllers;
 
 import com.example.ioproject.models.Position;
+import com.example.ioproject.dto.PositionDetailsProjection;
 import com.example.ioproject.services.PositionService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class PositionController {
     }
 
     @GetMapping("/get")
-    public List<Position> getAllPositions() {
+    public List<PositionDetailsProjection> getAllPositions() {
         return positionService.getAllPositions();
     }
 
@@ -29,12 +30,12 @@ public class PositionController {
     }
 
     @GetMapping("/low-fuel")
-    public List<Position> getLowFuelVehicles() {
+    public List<PositionDetailsProjection> getLowFuelVehicles() {
         return positionService.getLowFuelVehicles();
     }
 
     @GetMapping("/by-country")
-    public Map<String, List<Position>> getPositionsGroupedByCountry() {
+    public Map<String, List<PositionDetailsProjection>> getPositionsGroupedByCountry() {
         return positionService.getPositionsGroupedByCountry();
     }
 }

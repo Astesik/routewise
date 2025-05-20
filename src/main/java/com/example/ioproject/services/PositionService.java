@@ -2,6 +2,7 @@ package com.example.ioproject.services;
 
 import com.example.ioproject.models.Position;
 import com.example.ioproject.repository.PositionRepository;
+import com.example.ioproject.dto.PositionDetailsProjection;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,7 +33,6 @@ public class PositionService {
             Double latitude = coordinate != null ? (Double) coordinate.get("latitude") : null;
             Double longitude = coordinate != null ? (Double) coordinate.get("longitude") : null;
 
-            // Nowe pola:
             String ignitionState = pos.get("ignitionState") != null ? pos.get("ignitionState").toString() : null;
             Double speed = pos.get("speed") != null ? Double.valueOf(pos.get("speed").toString()) : null;
             Integer heading = pos.get("heading") != null ? Integer.valueOf(pos.get("heading").toString()) : null;
@@ -58,8 +58,6 @@ public class PositionService {
                 existingPosition.setLatitude(latitude);
                 existingPosition.setLongitude(longitude);
                 existingPosition.setUpdatedAt(LocalDateTime.now());
-
-                // Nowe pola:
                 existingPosition.setIgnitionState(ignitionState);
                 existingPosition.setSpeed(speed);
                 existingPosition.setHeading(heading);
@@ -86,28 +84,34 @@ public class PositionService {
         }
     }
 
-    public List<Position> getAllPositions() {
-        return positionRepository.findAll();
+    public List<PositionDetailsProjection> getAllPositions() {
+        return positionRepository.getPositionDetails();
     }
 
     public Map<String, Long> getVehicleCountByCountry() {
-        List<Position> positions = positionRepository.findAll();
+        List<PositionDetailsProjection> positions = positionRepository.getPositionDetails();
         return positions.stream()
                 .filter(p -> p.getCountryCode() != null)
-                .collect(Collectors.groupingBy(Position::getCountryCode, Collectors.counting()));
+                .collect(Collectors.groupingBy(PositionDetailsProjection::getCountryCode, Collectors.counting()));
     }
 
-    public List<Position> getLowFuelVehicles() {
-        List<Position> positions = positionRepository.findAll();
+    public List<PositionDetailsProjection> getLowFuelVehicles() {
+        List<PositionDetailsProjection> positions = positionRepository.getPositionDetails();
         return positions.stream()
                 .filter(p -> p.getFuelLevelPerc() != null && p.getFuelLevelPerc() < 50)
                 .collect(Collectors.toList());
     }
 
-    public Map<String, List<Position>> getPositionsGroupedByCountry() {
-        List<Position> positions = positionRepository.findAll();
+    public Map<String, List<PositionDetailsProjection>> getPositionsGroupedByCountry() {
+        List<PositionDetailsProjection> positions = positionRepository.getPositionDetails();
         return positions.stream()
                 .filter(p -> p.getCountryCode() != null)
-                .collect(Collectors.groupingBy(Position::getCountryCode));
+                .collect(Collectors.groupingBy(PositionDetailsProjection::getCountryCode));
     }
+
+    public List<PositionDetailsProjection> getPositionDetails() {
+        return positionRepository.getPositionDetails();
+    }
+
+
 }
