@@ -21,4 +21,12 @@ public class GpsService {
         String url = "https://logowanie.gpsonline.com.pl:443/atlas/okbruk/drivers?password=BodzentynBruk";
         return restTemplate.getForObject(url, Map.class);
     }
+
+    public Map<String, Object> getHistory(String deviceId, long from, long to) {
+        String url = String.format(
+                "https://logowanie.gpsonline.com.pl:443/atlas/okbruk/historyextended/%s/%d/%d?password=BodzentynBruk",
+                deviceId, from, to
+        );
+        return restTemplate.getForObject(url, Map.class);
+    }
 }

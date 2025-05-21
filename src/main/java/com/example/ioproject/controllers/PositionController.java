@@ -1,5 +1,7 @@
 package com.example.ioproject.controllers;
 
+import com.example.ioproject.dto.DaysRequestDTO;
+import com.example.ioproject.dto.ItalyStaySummaryDto;
 import com.example.ioproject.models.Position;
 import com.example.ioproject.dto.PositionDetailsProjection;
 import com.example.ioproject.services.PositionService;
@@ -37,5 +39,15 @@ public class PositionController {
     @GetMapping("/by-country")
     public Map<String, List<PositionDetailsProjection>> getPositionsGroupedByCountry() {
         return positionService.getPositionsGroupedByCountry();
+    }
+
+    @GetMapping("/history/today/{deviceId}")
+    public Map<String, Object> getTodayHistoryForDevice(@PathVariable String deviceId) {
+        return positionService.getTodayHistoryForDevice(deviceId);
+    }
+
+    @PostMapping("/history/italy")
+    public List<ItalyStaySummaryDto> getItalyStaySummary(@RequestBody DaysRequestDTO req) {
+        return positionService.getItalyTrucksStaySummary(req.getDays());
     }
 }
