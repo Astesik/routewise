@@ -1,6 +1,6 @@
 package com.example.ioproject.services;
 
-import com.example.ioproject.dto.TimelineBlockDto;
+import com.example.ioproject.position.dto.TimelineBlockDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

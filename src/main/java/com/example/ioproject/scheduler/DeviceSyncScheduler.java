@@ -1,8 +1,8 @@
 package com.example.ioproject.scheduler;
 
-import com.example.ioproject.services.DeviceService;
-import com.example.ioproject.services.DriverService;
-import com.example.ioproject.services.PositionService;
+import com.example.ioproject.device.service.DeviceService;
+import com.example.ioproject.driver.service.DriverService;
+import com.example.ioproject.position.service.PositionService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
