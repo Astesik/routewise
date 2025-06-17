@@ -1,8 +1,10 @@
 package com.example.ioproject.controllers;
 
+import com.example.ioproject.dto.VehicleDetailsDto;
 import com.example.ioproject.models.Vehicle;
 import com.example.ioproject.security.services.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +32,22 @@ public class VehicleController {
     // @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public Optional<Vehicle> getVehicleById(@PathVariable Long id) {
         return vehicleService.getVehicleById(id);
+    }
+
+    @GetMapping("/by-device/{deviceId}")
+    public Optional<Vehicle> getVehicleByDeviceId(@PathVariable String deviceId) {
+        return vehicleService.getVehicleByDeviceId(deviceId);
+    }
+
+    @GetMapping("/details/by-device/{deviceId}")
+    public ResponseEntity<VehicleDetailsDto> getVehicleDetailsByDeviceId(@PathVariable String deviceId) {
+        Optional<VehicleDetailsDto> details = vehicleService.getVehicleDetailsByDeviceId(deviceId);
+        return details.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/get/type/{type}")
+    public List<Vehicle> getVehiclesByType(@PathVariable String type) {
+        return vehicleService.getVehiclesByType(type);
     }
 
     // Endpoint: Dodaj nowy pojazd (dla admina)

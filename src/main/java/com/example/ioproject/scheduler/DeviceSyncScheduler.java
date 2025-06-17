@@ -33,4 +33,9 @@ public class DeviceSyncScheduler {
     public void syncPositions() {
         positionService.syncPositions();
     }
+
+    @Scheduled(fixedRate = 300000) // 5 minut
+    public void syncAbergPositions() {
+        positionService.syncAbergPositions();
+    }
 }

@@ -6,14 +6,16 @@ package com.example.ioproject.dto;
  */
 public class ItalyStaySummaryDto {
     private String deviceName;
+    private String driverFullName;
     private String arrivalTime; // ISO-8601 z timezone, np. "2025-05-21T01:25:00+02:00"
     private String exitTime;    // jw. - jeśli pojazd nadal w kraju, to czas aktualny
     private String summaryTime; // np. "2d 4h 30m"
 
     public ItalyStaySummaryDto() {}
 
-    public ItalyStaySummaryDto(String deviceName, String arrivalTime, String exitTime, String summaryTime) {
+    public ItalyStaySummaryDto(String deviceName,String driverFullName, String arrivalTime, String exitTime, String summaryTime) {
         this.deviceName = deviceName;
+        this.driverFullName = driverFullName;
         this.arrivalTime = arrivalTime;
         this.exitTime = exitTime;
         this.summaryTime = summaryTime;
@@ -25,6 +27,14 @@ public class ItalyStaySummaryDto {
 
     public void setDeviceName(String deviceName) {
         this.deviceName = deviceName;
+    }
+
+    public String getDriverFullName() {
+        return driverFullName;
+    }
+
+    public void setDriverFullName(String driverFullName) {
+        this.driverFullName = driverFullName;
     }
 
     public String getArrivalTime() {

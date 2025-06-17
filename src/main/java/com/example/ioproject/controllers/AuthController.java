@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "http://localhost:5173", // <- podmień na frontend jeśli inny
+@CrossOrigin(origins = "http://localhost:5175", // <- podmień na frontend jeśli inny
         allowCredentials = "true",
         maxAge = 3600)
 @RestController
@@ -70,7 +70,7 @@ public class AuthController {
     Cookie cookie = new Cookie("accessToken", jwt);
     cookie.setHttpOnly(true);
     cookie.setPath("/");
-    cookie.setMaxAge(60*60); // 60 minut
+    cookie.setMaxAge(60*60*24); // 60 minut
     cookie.setSecure(false); // zmień na true jeśli używasz HTTPS
     cookie.setDomain("192.168.1.139"); // lub domena frontendowa
     response.addCookie(cookie);
@@ -135,7 +135,7 @@ public class AuthController {
     cookie.setPath("/");
     cookie.setMaxAge(0); // 0 = usuwa od razu
     cookie.setSecure(false); // true jeśli HTTPS
-    cookie.setDomain("localhost"); // zmień na swoją domenę jeśli potrzeba
+    cookie.setDomain("192.168.1.139"); // zmień na swoją domenę jeśli potrzeba
     response.addCookie(cookie);
 
     return ResponseEntity.ok(new MessageResponse("You've been signed out!"));

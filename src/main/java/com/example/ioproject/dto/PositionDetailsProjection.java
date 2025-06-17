@@ -20,5 +20,5 @@ public interface PositionDetailsProjection {
     String getDriverSlot1();
     String getDriver1FirstName();
     String getDriver1LastName();
-    LocalDateTime getUpdatedAt();
+    LocalDateTime getReceivedAt();
 }

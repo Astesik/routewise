@@ -45,6 +45,9 @@ public class Position {
     @Column(name = "driver_slot_1")
     private String driverSlot1;
 
+    @Column(name = "received_at")
+    private LocalDateTime receivedAt;
+
     // Pusty konstruktor (wymagany przez JPA)
     public Position() {
     }
@@ -162,5 +165,13 @@ public class Position {
 
     public void setDriverSlot1(String driverSlot1) {
         this.driverSlot1 = driverSlot1;
+    }
+
+    public LocalDateTime getReceivedAt() {
+        return receivedAt;
+    }
+
+    public void setReceivedAt(LocalDateTime receivedAt) {
+        this.receivedAt = receivedAt;
     }
 }

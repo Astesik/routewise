@@ -32,7 +32,8 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
             vp.driver_slot_1 as driverSlot1,
             dr1.first_name as driver1FirstName,
             dr1.last_name as driver1LastName,
-            vp.updated_at as updatedAt
+            vp.updated_at as updatedAt,
+            vp.received_at as receivedAt
         FROM vehicle_positions vp
         LEFT JOIN devices d ON d.serial_number = vp.device_id
         LEFT JOIN drivers dr0 ON dr0.tachoid = CAST(vp.driver_slot_0 AS BIGINT)
