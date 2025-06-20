@@ -3,6 +3,7 @@ package com.example.ioproject.repair.service;
 
 import com.example.ioproject.repair.dto.RepairDto;
 import com.example.ioproject.repair.dto.WeekRepairsDto;
+import com.example.ioproject.repair.exception.RepairNotFoundException;
 import com.example.ioproject.repair.model.Repair;
 import com.example.ioproject.vehicle.model.Vehicle;
 import com.example.ioproject.place.model.Place;
@@ -38,8 +39,11 @@ public class RepairService {
     }
 
     public RepairDto getRepair(Long id) {
-        return repairRepository.findById(id).map(this::toDto).orElse(null);
+        return repairRepository.findById(id)
+                .map(this::toDto)
+                .orElseThrow(() -> new RepairNotFoundException("Repair not found: " + id));
     }
+
 
     public RepairDto saveRepair(RepairDto dto) {
         Repair repair = new Repair();
@@ -61,6 +65,9 @@ public class RepairService {
     }
 
     public void deleteRepair(Long id) {
+        if (!repairRepository.existsById(id)) {
+            throw new RepairNotFoundException("Repair not found: " + id);
+        }
         repairRepository.deleteById(id);
     }
 

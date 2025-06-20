@@ -1,38 +1,59 @@
-// services/PlaceService.java
 package com.example.ioproject.place.service;
 
+import com.example.ioproject.place.dto.request.PlaceRequest;
+import com.example.ioproject.place.dto.response.PlaceResponse;
+import com.example.ioproject.place.exception.PlaceNotFoundException;
 import com.example.ioproject.place.model.Place;
 import com.example.ioproject.place.repository.PlaceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PlaceService {
 
-    @Autowired
-    private PlaceRepository placeRepository;
+    private final PlaceRepository placeRepository;
 
-    public List<Place> getAllPlaces() {
-        return placeRepository.findAll();
+    public PlaceService(PlaceRepository placeRepository) {
+        this.placeRepository = placeRepository;
     }
 
-    public Optional<Place> getPlace(Long id) {
-        return placeRepository.findById(id);
+    public List<PlaceResponse> getAllPlaces() {
+        return placeRepository.findAll().stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
     }
 
-    public Place addPlace(Place place) {
-        return placeRepository.save(place);
+    public PlaceResponse getPlace(Long id) {
+        Place place = placeRepository.findById(id)
+                .orElseThrow(() -> new PlaceNotFoundException("Place with id " + id + " not found"));
+        return mapToResponse(place);
     }
 
-    public Place updatePlace(Long id, Place place) {
-        place.setId(id);
-        return placeRepository.save(place);
+    public PlaceResponse addPlace(PlaceRequest request) {
+        Place place = new Place();
+        place.setName(request.getName());
+        Place saved = placeRepository.save(place);
+        return mapToResponse(saved);
+    }
+
+    public PlaceResponse updatePlace(Long id, PlaceRequest request) {
+        Place place = placeRepository.findById(id)
+                .orElseThrow(() -> new PlaceNotFoundException("Place with id " + id + " not found"));
+        place.setName(request.getName());
+        Place saved = placeRepository.save(place);
+        return mapToResponse(saved);
     }
 
     public void deletePlace(Long id) {
+        if (!placeRepository.existsById(id)) {
+            throw new PlaceNotFoundException("Place with id " + id + " not found");
+        }
         placeRepository.deleteById(id);
+    }
+
+    private PlaceResponse mapToResponse(Place place) {
+        return new PlaceResponse(place.getId(), place.getName());
     }
 }

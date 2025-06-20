@@ -1,34 +1,37 @@
+// controller/DriverController.java
 package com.example.ioproject.driver.controller;
 
-import com.example.ioproject.driver.model.Driver;
+import com.example.ioproject.driver.dto.DriverDto;
 import com.example.ioproject.driver.service.DriverService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/drivers")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class DriverController {
 
-    @Autowired
-    private DriverService driverService;
+    private final DriverService driverService;
+
+    public DriverController(DriverService driverService) {
+        this.driverService = driverService;
+    }
 
     @GetMapping("/get")
-    public List<Driver> getAllDrivers() {
+    public List<DriverDto> getAllDrivers() {
         return driverService.getAllDrivers();
     }
 
     @GetMapping("/get/{id}")
-    public Optional<Driver> getDriverById(@PathVariable Long id) {
+    public DriverDto getDriverById(@PathVariable Long id) {
         return driverService.getDriverById(id);
     }
 
     @PostMapping
-    public Driver addDriver(@RequestBody Driver driver) {
-        return driverService.addDriver(driver);
+    public DriverDto addDriver(@Valid @RequestBody DriverDto dto) {
+        return driverService.addDriver(dto);
     }
 
     @DeleteMapping("/{id}")

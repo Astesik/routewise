@@ -44,7 +44,7 @@ public class RepairController {
     }
 
     @PutMapping("/{id}")
-    public RepairDto updateRepair(@PathVariable Long id, @RequestBody RepairDto dto) {
+    public RepairDto updateRepair(@PathVariable Long id, @Valid @RequestBody RepairDto dto) {
         dto.setId(id);
         return repairService.saveRepair(dto);
     }

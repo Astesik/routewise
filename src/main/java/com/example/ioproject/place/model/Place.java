@@ -11,7 +11,16 @@ public class Place {
     private Long id;
 
     @Column(unique = true)
-    private String name; // nazwa miejsca
+    private String name;
+
+    // Domyślny konstruktor (wymagany przez JPA)
+    public Place() {}
+
+    // Konstruktor pomocniczy
+    public Place(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     // Gettery i settery
     public Long getId() { return id; }

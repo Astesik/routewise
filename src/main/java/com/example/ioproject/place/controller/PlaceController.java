@@ -1,9 +1,9 @@
-// controllers/PlaceController.java
 package com.example.ioproject.place.controller;
 
-import com.example.ioproject.place.model.Place;
+import com.example.ioproject.place.dto.request.PlaceRequest;
+import com.example.ioproject.place.dto.response.PlaceResponse;
 import com.example.ioproject.place.service.PlaceService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,31 +13,35 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class PlaceController {
 
-    @Autowired
-    private PlaceService placeService;
+    private final PlaceService placeService;
 
-    @GetMapping("/get")
-    public List<Place> getAllPlaces() {
+    public PlaceController(PlaceService placeService) {
+        this.placeService = placeService;
+    }
+
+    @GetMapping
+    public List<PlaceResponse> getAllPlaces() {
         return placeService.getAllPlaces();
     }
 
     @GetMapping("/{id}")
-    public Place getPlace(@PathVariable Long id) {
-        return placeService.getPlace(id).orElse(null);
+    public PlaceResponse getPlace(@PathVariable Long id) {
+        return placeService.getPlace(id);
     }
 
     @PostMapping
-    public Place addPlace(@RequestBody Place place) {
-        return placeService.addPlace(place);
+    public PlaceResponse addPlace(@RequestBody PlaceRequest request) {
+        return placeService.addPlace(request);
     }
 
     @PutMapping("/{id}")
-    public Place updatePlace(@PathVariable Long id, @RequestBody Place place) {
-        return placeService.updatePlace(id, place);
+    public PlaceResponse updatePlace(@PathVariable Long id, @RequestBody PlaceRequest request) {
+        return placeService.updatePlace(id, request);
     }
 
     @DeleteMapping("/{id}")
-    public void deletePlace(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePlace(@PathVariable Long id) {
         placeService.deletePlace(id);
+        return ResponseEntity.noContent().build();
     }
 }
