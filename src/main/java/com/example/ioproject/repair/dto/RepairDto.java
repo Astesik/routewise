@@ -1,15 +1,14 @@
-// dto/RepairDto.java
+// src/main/java/com/example/ioproject/repair/dto/RepairDto.java
 package com.example.ioproject.repair.dto;
 
 import jakarta.validation.constraints.*;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RepairDto {
-    public enum RepairStatus {
-        PLANNED, IN_PROGRESS, DONE, CANCELLED
-    }
+    public enum RepairStatus { PLANNED, IN_PROGRESS, DONE, CANCELLED }
 
     private Long id;
 
@@ -30,82 +29,46 @@ public class RepairDto {
     @NotNull(message = "Miejsce jest wymagane")
     private Long placeId;
 
-    private String placeName; // <-- bez walidacji
+    private String placeName;
 
     @NotBlank(message = "Status jest wymagany")
     private String status;
 
+    private String createdBy;
 
-    public Long getId() {
-        return id;
-    }
+    // NOWE: pozycje jako JSON
+    private List<RepairItemDto> items = new ArrayList<>();
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Long getVehicleId() {
-        return vehicleId;
-    }
+    public Long getVehicleId() { return vehicleId; }
+    public void setVehicleId(Long vehicleId) { this.vehicleId = vehicleId; }
 
-    public void setVehicleId(Long vehicleId) {
-        this.vehicleId = vehicleId;
-    }
+    public String getLicensePlates() { return licensePlates; }
+    public void setLicensePlates(String licensePlates) { this.licensePlates = licensePlates; }
 
-    public String getLicensePlates() {
-        return licensePlates;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public void setLicensePlates(String licensePlates) {
-        this.licensePlates = licensePlates;
-    }
+    public LocalDate getPlannedDate() { return plannedDate; }
+    public void setPlannedDate(LocalDate plannedDate) { this.plannedDate = plannedDate; }
 
-    public String getDescription() {
-        return description;
-    }
+    public LocalTime getPlannedTime() { return plannedTime; }
+    public void setPlannedTime(LocalTime plannedTime) { this.plannedTime = plannedTime; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public Long getPlaceId() { return placeId; }
+    public void setPlaceId(Long placeId) { this.placeId = placeId; }
 
-    public LocalDate getPlannedDate() {
-        return plannedDate;
-    }
+    public String getPlaceName() { return placeName; }
+    public void setPlaceName(String placeName) { this.placeName = placeName; }
 
-    public void setPlannedDate(LocalDate plannedDate) {
-        this.plannedDate = plannedDate;
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
-    public LocalTime getPlannedTime() {
-        return plannedTime;
-    }
+    public String getCreatedBy() { return createdBy; }
+    public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
 
-    public void setPlannedTime(LocalTime plannedTime) {
-        this.plannedTime = plannedTime;
-    }
-
-    public Long getPlaceId() {
-        return placeId;
-    }
-
-    public void setPlaceId(Long placeId) {
-        this.placeId = placeId;
-    }
-
-    public String getPlaceName() {
-        return placeName;
-    }
-
-    public void setPlaceName(String placeName) {
-        this.placeName = placeName;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
+    public List<RepairItemDto> getItems() { return items; }
+    public void setItems(List<RepairItemDto> items) { this.items = items; }
 }

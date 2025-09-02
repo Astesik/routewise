@@ -33,7 +33,7 @@ public class PlaceService {
 
     public PlaceResponse addPlace(PlaceRequest request) {
         Place place = new Place();
-        place.setName(request.getName());
+        copyFromRequest(place, request);
         Place saved = placeRepository.save(place);
         return mapToResponse(saved);
     }
@@ -41,7 +41,7 @@ public class PlaceService {
     public PlaceResponse updatePlace(Long id, PlaceRequest request) {
         Place place = placeRepository.findById(id)
                 .orElseThrow(() -> new PlaceNotFoundException("Place with id " + id + " not found"));
-        place.setName(request.getName());
+        copyFromRequest(place, request);
         Place saved = placeRepository.save(place);
         return mapToResponse(saved);
     }
@@ -53,7 +53,26 @@ public class PlaceService {
         placeRepository.deleteById(id);
     }
 
-    private PlaceResponse mapToResponse(Place place) {
-        return new PlaceResponse(place.getId(), place.getName());
+    private void copyFromRequest(Place p, PlaceRequest r) {
+        p.setName(r.getName());
+        p.setLongitude(r.getLongitude());
+        p.setLatitude(r.getLatitude());
+        p.setPhone(r.getPhone());
+        p.setEmail(r.getEmail());
+        p.setDescription(r.getDescription());
+        p.setRadius(r.getRadius());
+    }
+
+    private PlaceResponse mapToResponse(Place p) {
+        return new PlaceResponse(
+                p.getId(),
+                p.getName(),
+                p.getLongitude(),
+                p.getLatitude(),
+                p.getPhone(),
+                p.getEmail(),
+                p.getDescription(),
+                p.getRadius()
+        );
     }
 }

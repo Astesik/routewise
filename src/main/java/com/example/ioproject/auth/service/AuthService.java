@@ -61,7 +61,7 @@ public class AuthService {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        Cookie cookie = CookieUtils.createJwtCookie(jwt, "192.168.1.139", false, 60 * 60 * 24);
+        Cookie cookie = CookieUtils.createJwtCookie(jwt, "192.168.50.106", false, 60 * 60 * 24);
         response.addCookie(cookie);
 
         return ResponseEntity.ok(new JwtResponse(jwt,
@@ -110,7 +110,7 @@ public class AuthService {
     }
 
     public ResponseEntity<MessageResponse> logoutUser(HttpServletResponse response) {
-        Cookie cookie = CookieUtils.createLogoutCookie("192.168.1.139", false);
+        Cookie cookie = CookieUtils.createLogoutCookie("192.168.50.106", false);
         response.addCookie(cookie);
 
         return ResponseEntity.ok(new MessageResponse("You've been signed out!"));

@@ -1,11 +1,11 @@
-// controllers/RepairController.java
 package com.example.ioproject.repair.controller;
 
+import com.example.ioproject.repair.dto.RepairCommentDto;
 import com.example.ioproject.repair.dto.RepairDto;
 import com.example.ioproject.repair.dto.WeekRepairsDto;
+import com.example.ioproject.repair.service.RepairCommentService;
 import com.example.ioproject.repair.service.RepairService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,8 +15,16 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class RepairController {
 
-    @Autowired
-    private RepairService repairService;
+    private final RepairService repairService;
+    private final RepairCommentService repairCommentService;
+
+    public RepairController(RepairService repairService,
+                            RepairCommentService repairCommentService) {
+        this.repairService = repairService;
+        this.repairCommentService = repairCommentService;
+    }
+
+    // ---------- Repairs ----------
 
     @GetMapping("/get")
     public List<RepairDto> getAllRepairs() {
@@ -57,5 +65,23 @@ public class RepairController {
     @GetMapping("/grouped-by-week")
     public List<WeekRepairsDto> getRepairsGroupedByWeek() {
         return repairService.getRepairsGroupedByWeek();
+    }
+
+    // ---------- Comments ----------
+
+    @GetMapping("/{id}/comments")
+    public List<RepairCommentDto> listComments(@PathVariable Long id) {
+        return repairCommentService.list(id);
+    }
+
+    /**
+     * Dodanie komentarza — kontroler nie posiada logiki biznesowej:
+     * - walidacja pola 'text' odbywa się adnotacją @NotBlank na DTO,
+     * - rozpoznanie bieżącego użytkownika i zapis autora są w serwisie.
+     */
+    @PostMapping("/{id}/comments")
+    public RepairCommentDto addComment(@PathVariable Long id,
+                                       @Valid @RequestBody RepairCommentDto dto) {
+        return repairCommentService.addFromCurrentUser(id, dto);
     }
 }

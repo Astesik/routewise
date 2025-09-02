@@ -25,7 +25,9 @@ public class Vehicle {
     private String ownership; // Własność (company name/owner)
     private String ownershipUntil; // doKiedyWłasność (może być też LocalDate jeśli zawsze data)
     private LocalDate technicalInspection; // Przegląd
-    private LocalDate tachographInspection; // Tachograf
+    private LocalDate tachographInspection;
+    @Column(name = "uk_vignette_valid_until")
+    private LocalDate ukVignetteValidUntil;// Tachograf
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "device_id", unique = true)
     private Device device;
@@ -73,5 +75,6 @@ public class Vehicle {
     public Device getDevice() { return device; }
     public void setDevice(Device device) { this.device = device; }
 
-    // Dodaj pozostałe gettery/settery...
+    public LocalDate getUkVignetteValidUntil() { return ukVignetteValidUntil; }
+    public void setUkVignetteValidUntil(LocalDate ukVignetteValidUntil) { this.ukVignetteValidUntil = ukVignetteValidUntil; }
 }

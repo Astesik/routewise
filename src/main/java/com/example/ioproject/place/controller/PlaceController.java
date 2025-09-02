@@ -3,6 +3,7 @@ package com.example.ioproject.place.controller;
 import com.example.ioproject.place.dto.request.PlaceRequest;
 import com.example.ioproject.place.dto.response.PlaceResponse;
 import com.example.ioproject.place.service.PlaceService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,12 +31,12 @@ public class PlaceController {
     }
 
     @PostMapping
-    public PlaceResponse addPlace(@RequestBody PlaceRequest request) {
+    public PlaceResponse addPlace(@RequestBody @Valid PlaceRequest request) {
         return placeService.addPlace(request);
     }
 
     @PutMapping("/{id}")
-    public PlaceResponse updatePlace(@PathVariable Long id, @RequestBody PlaceRequest request) {
+    public PlaceResponse updatePlace(@PathVariable Long id, @RequestBody @Valid PlaceRequest request) {
         return placeService.updatePlace(id, request);
     }
 

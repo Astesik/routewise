@@ -10,16 +10,20 @@ import com.example.ioproject.driver.repository.DriverRepository;
 import com.example.ioproject.position.dto.PositionDetailsProjection;
 import com.example.ioproject.services.GpsService;
 import com.example.ioproject.vehicle.service.VehicleGroupService;
+import com.example.ioproject.position.service.GeoLocationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
 
 import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class PositionService {
@@ -28,6 +32,7 @@ public class PositionService {
     private final DeviceRepository deviceRepository;
     private final DriverRepository driverRepository;
     private final VehicleGroupService vehicleGroupService;
+    private final GeoLocationService geoLocationService;
     private final ExecutorService executor = Executors.newFixedThreadPool(10);
 
     // -- Nowe dla AbergTelematics --
@@ -49,13 +54,15 @@ public class PositionService {
             PositionRepository positionRepository,
             DriverRepository driverRepository,
             DeviceRepository deviceRepository,
-            VehicleGroupService vehicleGroupService
+            VehicleGroupService vehicleGroupService,
+            GeoLocationService geoLocationService
     ) {
         this.gpsService = gpsService;
         this.positionRepository = positionRepository;
         this.deviceRepository = deviceRepository;
         this.vehicleGroupService = vehicleGroupService;
         this.driverRepository = driverRepository;
+        this.geoLocationService = geoLocationService;
     }
 
     // --- DODANE: Synchronizacja pozycji AbergTelematics ---
@@ -219,7 +226,10 @@ public class PositionService {
 
             if (existingPositionOpt.isPresent()) {
                 Position existingPosition = existingPositionOpt.get();
-                existingPosition.setCountryCode(countryCode);
+                // KLUCZOWA LINIJKA – tylko jeśli countryCode nie jest null
+                if (countryCode != null && !countryCode.trim().isEmpty()) {
+                    existingPosition.setCountryCode(countryCode);
+                }
                 existingPosition.setFuelLevelPerc(fuelLevel);
                 existingPosition.setLatitude(latitude);
                 existingPosition.setLongitude(longitude);
@@ -234,6 +244,7 @@ public class PositionService {
 
                 positionRepository.save(existingPosition);
             } else {
+                // Tu, jeśli countryCode jest null – możesz nie przekazywać (zostawić null w nowej pozycji)
                 Position newPosition = new Position(
                         deviceId,
                         countryCode,
@@ -252,6 +263,7 @@ public class PositionService {
             }
         }
     }
+
 
     public List<PositionDetailsProjection> getAllPositions() {
         return positionRepository.getPositionDetails();
@@ -490,5 +502,36 @@ public class PositionService {
             currentFrom = currentTo;
         }
         return allPositions;
+    }
+    public Optional<PositionDetailsProjection> getPositionByDeviceId(String deviceId) {
+        return positionRepository.getPositionDetails().stream()
+                .filter(p -> deviceId.equalsIgnoreCase(p.getDeviceId()))
+                .findFirst();
+    }
+
+    @Autowired
+    private AsyncReverseGeocodeService asyncReverseGeocodeService;
+
+    public void printCountrySummaryNoCacheAsync() {
+        List<Position> allPositions = positionRepository.findAll();
+        Map<String, List<String>> countryToDevices = new HashMap<>();
+
+        for (Position pos : allPositions) {
+            if (pos.getLatitude() != null && pos.getLongitude() != null) {
+                // Reverse geocode w tle!
+                asyncReverseGeocodeService.reverseGeocodeAndUpdate(pos);
+            }
+            String country = pos.getCountryCode();
+            if (country == null) country = "N/A";
+            countryToDevices
+                    .computeIfAbsent(country.toUpperCase(), k -> new ArrayList<>())
+                    .add(pos.getDeviceId());
+        }
+
+        System.out.println("=== Tabela pojazdów wg kraju (ASYNC geocode) ===");
+        for (var entry : countryToDevices.entrySet()) {
+            System.out.printf("%-10s | %2d pojazdów | %s\n", entry.getKey(), entry.getValue().size(), entry.getValue());
+        }
+        System.out.println("===============================");
     }
 }

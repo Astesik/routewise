@@ -94,6 +94,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                     auth.requestMatchers("/api/auth/**").permitAll()
                             .requestMatchers("/api/test/**").permitAll()
                             .requestMatchers("/api/vehicles/get/**").permitAll()
+
                             .anyRequest().authenticated()
             );
 
@@ -118,6 +119,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/api/**", configuration);
+    source.registerCorsConfiguration("/uploads/**", configuration);
     return source;
   }
 }

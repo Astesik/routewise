@@ -29,6 +29,11 @@ public class PositionController {
         return positionService.getAllPositions();
     }
 
+    @GetMapping("/get/{deviceId}")
+    public PositionDetailsProjection getPositionByDeviceId(@PathVariable String deviceId) {
+        return positionService.getPositionByDeviceId(deviceId).orElse(null);
+    }
+
     @GetMapping("/trucks")
     public List<PositionDetailsProjection> getTrucks() {
         return positionService.getTrucks();

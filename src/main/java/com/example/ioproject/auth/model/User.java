@@ -32,6 +32,14 @@ public class User {
   @Size(max = 120)
   private String password;
 
+  @Size(max = 60)
+  @Column(name = "first_name")
+  private String firstName;
+
+  @Size(max = 60)
+  @Column(name = "last_name")
+  private String lastName;
+
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
   private Set<Role> roles = new HashSet<>();
@@ -84,4 +92,9 @@ public class User {
   public void setRoles(Set<Role> roles) {
     this.roles = roles;
   }
+
+  public String getFirstName() { return firstName; }
+  public void setFirstName(String firstName) { this.firstName = firstName; }
+  public String getLastName() { return lastName; }
+  public void setLastName(String lastName) { this.lastName = lastName; }
 }
