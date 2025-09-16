@@ -12,9 +12,13 @@ public class DocumentDto {
     private String downloadUrl;
     private DocumentType type;
     private LocalDateTime createdAt;
+    private java.time.LocalDate validUntil;
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public java.time.LocalDate getValidUntil() { return validUntil; }
+    public void setValidUntil(java.time.LocalDate validUntil) { this.validUntil = validUntil; }
 
     // Gettery i settery
     public Long getId() { return id; }

@@ -19,6 +19,9 @@ public class Document {
     private long size;
     private String path;
 
+    @Column(nullable = true)
+    private java.time.LocalDate validUntil; // NOWE
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -66,4 +69,6 @@ public class Document {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+    public java.time.LocalDate getValidUntil() { return validUntil; }
+    public void setValidUntil(java.time.LocalDate validUntil) { this.validUntil = validUntil; }
 }

@@ -6,12 +6,14 @@ import com.example.ioproject.document.model.Document;
 import com.example.ioproject.document.model.DocumentType;
 import com.example.ioproject.document.service.DocumentService;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -30,9 +32,11 @@ public class DocumentController {
     public ResponseEntity<DocumentDto> upload(
             @PathVariable Long vehicleId,
             @RequestParam("file") MultipartFile file,
-            @RequestParam("type") DocumentType type
+            @RequestParam("type") DocumentType type,
+            @RequestParam(value = "validUntil", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validUntil
     ) throws IOException {
-        return ResponseEntity.ok(documentService.saveDocument(vehicleId, file, type));
+        return ResponseEntity.ok(documentService.saveDocument(vehicleId, file, type, validUntil));
     }
 
     @GetMapping("/vehicle/{vehicleId}")
@@ -43,6 +47,13 @@ public class DocumentController {
     @GetMapping("/download/{id}")
     public void download(@PathVariable Long id, HttpServletResponse response) throws IOException {
         documentService.writeDocumentToResponse(id, response);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        documentService.deleteDocument(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/todo")
